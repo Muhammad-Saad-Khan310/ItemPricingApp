@@ -150,33 +150,33 @@ class _AuthScreenState extends State<AuthScreen> {
                           const SizedBox(
                             height: 16,
                           ),
-                          if (!_isLogin)
-                            TextFormField(
-                              key: const ValueKey('username'),
-                              validator: (value) {
-                                if (value!.isEmpty || value.length < 4) {
-                                  return 'Please Enter at least 4 characters.';
-                                }
-                                return null;
-                              },
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10.0),
-                                  ),
-                                  borderSide: BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.none,
-                                  ),
-                                ),
-                                labelText: 'UserName',
-                                fillColor: fieldColor,
-                                filled: true,
-                              ),
-                              onSaved: (value) {
-                                _userName = value!;
-                              },
-                            ),
+                          // if (!_isLogin)
+                          //   TextFormField(
+                          //     key: const ValueKey('username'),
+                          //     validator: (value) {
+                          //       if (value!.isEmpty || value.length < 4) {
+                          //         return 'Please Enter at least 4 characters.';
+                          //       }
+                          //       return null;
+                          //     },
+                          //     decoration: const InputDecoration(
+                          //       border: OutlineInputBorder(
+                          //         borderRadius: BorderRadius.all(
+                          //           Radius.circular(10.0),
+                          //         ),
+                          //         borderSide: BorderSide(
+                          //           width: 0,
+                          //           style: BorderStyle.none,
+                          //         ),
+                          //       ),
+                          //       labelText: 'UserName',
+                          //       fillColor: fieldColor,
+                          //       filled: true,
+                          //     ),
+                          //     onSaved: (value) {
+                          //       _userName = value!;
+                          //     },
+                          //   ),
                           const SizedBox(
                             height: 16,
                           ),
@@ -349,12 +349,12 @@ class _AuthScreenState extends State<AuthScreen> {
                         ],
                       )),
                   //TODO: Demo Button
-                  ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, 'homeScreen');
-                      },
-                      icon: const Icon(Icons.skip_next_outlined),
-                      label: const Text('To Home'))
+                  // ElevatedButton.icon(
+                  //     onPressed: () {
+                  //       Navigator.pushReplacementNamed(context, 'homeScreen');
+                  //     },
+                  //     icon: const Icon(Icons.skip_next_outlined),
+                  //     label: const Text('To Home'))
                 ],
               ),
             ),

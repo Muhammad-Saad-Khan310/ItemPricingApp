@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/models/productModal.dart';
+import '../models/cart.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   static const routeName = 'ProductDetailScreen';
@@ -12,6 +15,8 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  var _isLoading = false;
+  var _addedToCart = false;
   final List<Color> aviliableColors = [
     Colors.black,
     Colors.amber,
@@ -25,6 +30,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     final productsData =
         Provider.of<ProdcutsList>(context, listen: false).findById(productId);
+
+    Future<void> _saveData() async {
+      setState(() {
+        _isLoading = true;
+      });
+      await Provider.of<Cart>(context, listen: false).AddtoCart(
+          productsData.productImage,
+          productsData.productName,
+          productsData.prodcutPrice,
+          productsData.productId);
+      _addedToCart = true;
+
+      setState(() {
+        _isLoading = false;
+      });
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xffE5E5E5),
@@ -52,9 +73,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         width: double.infinity,
                         child: Hero(
                           tag: productsData.productId,
-                          child: Image.network(
-                            productsData.productImage,
-                            fit: BoxFit.cover,
+                          child: GestureDetector(
+                            onTap: () async {
+                              final url = Uri.parse(productId);
+                              if (await canLaunchUrl(url)) {
+                                await launchUrl(url);
+                              } else {
+                                throw "Invalid url link";
+                              }
+                            },
+                            child: Image.network(
+                              productsData.productImage,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
@@ -64,12 +95,27 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Text(
-                              productsData.productName,
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  productsData.productName,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                _isLoading
+                                    ? CircularProgressIndicator()
+                                    : IconButton(
+                                        onPressed: () {
+                                          _saveData();
+                                        },
+                                        icon: _addedToCart
+                                            ? Icon(Icons.shopping_cart)
+                                            : Icon(
+                                                Icons.shopping_cart_outlined))
+                              ],
                             ),
                             const SizedBox(
                               height: 4,
@@ -102,28 +148,40 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   height: 1.5,
                                   wordSpacing: 1),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text('Aviliable Colors'),
-                                SizedBox(
-                                  height: 100,
-                                  width: 150,
-                                  child: ListView.builder(
-                                      itemCount: aviliableColors.length,
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (ctx, i) => Padding(
-                                            padding: const EdgeInsets.all(5),
-                                            child: CircleAvatar(
-                                              maxRadius: 10,
-                                              minRadius: 10,
-                                              backgroundColor:
-                                                  aviliableColors[i],
-                                            ),
-                                          )),
-                                ),
-                              ],
-                            )
+                            // Column(
+                            //   children: [
+                            //     Text(
+                            //       "Description",
+                            //       style: TextStyle(fontWeight: FontWeight.bold),
+                            //     ),
+                            //     SizedBox(
+                            //       height: 10,
+                            //     ),
+                            //     Text(productsData.productDesc),
+                            //   ],
+                            // )
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     const Text('Aviliable Colors'),
+                            //     SizedBox(
+                            //       height: 100,
+                            //       width: 150,
+                            //       child: ListView.builder(
+                            //           itemCount: aviliableColors.length,
+                            //           scrollDirection: Axis.horizontal,
+                            //           itemBuilder: (ctx, i) => Padding(
+                            //                 padding: const EdgeInsets.all(5),
+                            //                 child: CircleAvatar(
+                            //                   maxRadius: 10,
+                            //                   minRadius: 10,
+                            //                   backgroundColor:
+                            //                       aviliableColors[i],
+                            //                 ),
+                            //               )),
+                            //     ),
+                            //   ],
+                            // )
                           ],
                         ),
                       ),

@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:shopapp/models/horizantalProductModal.dart';
 
 class HorizantalList extends StatelessWidget {
@@ -21,6 +22,7 @@ class HorizantalList extends StatelessWidget {
             return ListTileItem(
               procuctId: loadeditems.products[i].productId,
               productImage: loadeditems.products[i].productImage,
+              Url: loadeditems.products[i].siteUrl,
             );
           }),
     );
@@ -30,8 +32,10 @@ class HorizantalList extends StatelessWidget {
 class ListTileItem extends StatelessWidget {
   final String productImage;
   final String procuctId;
+  final String Url;
 
-  ListTileItem({required this.productImage, required this.procuctId});
+  ListTileItem(
+      {required this.productImage, required this.procuctId, required this.Url});
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +46,19 @@ class ListTileItem extends StatelessWidget {
         child: SizedBox(
           height: 67,
           width: 90,
-          child: Image.network(
-            productImage,
-            fit: BoxFit.cover,
+          child: GestureDetector(
+            onTap: () async {
+              final url = Uri.parse(Url);
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url);
+              } else {
+                throw "Invalid url link";
+              }
+            },
+            child: Image.network(
+              productImage,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),

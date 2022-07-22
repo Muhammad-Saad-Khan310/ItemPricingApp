@@ -5,31 +5,59 @@ import 'package:provider/provider.dart';
 import 'package:shopapp/models/productModal.dart';
 import 'package:shopapp/screens/product_detailScreen.dart';
 
-class ProductGrid extends StatelessWidget {
+class ProductGrid extends StatefulWidget {
+  @override
+  State<ProductGrid> createState() => _ProductGridState();
+}
+
+class _ProductGridState extends State<ProductGrid> {
+  var _isInit = true;
+  var _isLoading = false;
+
+  @override
+  void didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<ProdcutsList>(context, listen: false)
+          .FetchProduct()
+          .then((value) => setState(() {
+                _isLoading = false;
+              }));
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final loadedProducts =
-        Provider.of<ProdcutsList>(context, listen: false).productsItem;
+    final loadedProducts = Provider.of<ProdcutsList>(context).productsItem;
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: loadedProducts.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: 0.8,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            crossAxisCount: 2,
-          ),
-          itemBuilder: (ctx, i) {
-            return ProductTile(
-              id: loadedProducts[i].productId,
-              imageUrl: loadedProducts[i].productImage,
-              title: loadedProducts[i].productName,
-              price: loadedProducts[i].prodcutPrice,
-            );
-          }),
+      child: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: loadedProducts.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: 0.8,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                crossAxisCount: 2,
+              ),
+              itemBuilder: (ctx, i) {
+                return ProductTile(
+                  id: loadedProducts[i].productId,
+                  imageUrl: loadedProducts[i].productImage,
+                  title: loadedProducts[i].productName,
+                  price: loadedProducts[i].prodcutPrice,
+                );
+              }),
     );
   }
 }
