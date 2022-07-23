@@ -121,7 +121,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               height: 4,
                             ),
                             Text(
-                              '\$${productsData.prodcutPrice}',
+                              'Price: ${productsData.prodcutPrice}',
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
