@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _formKey = GlobalKey<FormState>();
 
   var userInput = "";
+  var _isLoading = false;
 
   Future<void> searchProduct() async {
     if (!_formKey.currentState!.validate()) {
@@ -27,8 +28,14 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
     _formKey.currentState!.save();
+    setState(() {
+      _isLoading = true;
+    });
     await Provider.of<ProdcutsList>(context, listen: false)
         .searchProduct(userInput);
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -72,38 +79,57 @@ class _HomeScreenState extends State<HomeScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
-                      //TODO: valueKey =>  if you needed in future.
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                            borderSide: BorderSide(
-                              width: 0,
-                              style: BorderStyle.none,
+                    Card(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: TextFormField(
+                              //TODO: valueKey =>  if you needed in future.
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                  borderSide: BorderSide(
+                                    width: 0,
+                                    style: BorderStyle.none,
+                                  ),
+                                ),
+                                labelText: 'Search what you need...',
+                                fillColor: Colors.white,
+                                filled: true,
+                                // suffixIcon: Icon(Icons.search)
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Please enter product name";
+                                }
+                                return null;
+                              },
+
+                              onSaved: (value) {
+                                userInput = value!;
+                              },
                             ),
                           ),
-                          labelText: 'Search what you need...',
-                          fillColor: Colors.white,
-                          filled: true,
-                          suffixIcon: Icon(Icons.search)),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter product name";
-                        }
-                        return null;
-                      },
-
-                      onSaved: (value) {
-                        userInput = value!;
-                      },
+                          IconButton(
+                              onPressed: () {
+                                searchProduct();
+                              },
+                              icon: _isLoading
+                                  ? CircularProgressIndicator()
+                                  : Icon(Icons.search))
+                        ],
+                      ),
                     ),
-                    TextButton(
-                        onPressed: () {
-                          searchProduct();
-                        },
-                        child: Text("search item"))
+                    // TextButton(
+                    //     onPressed: () {
+                    //       searchProduct();
+                    //     },
+                    //     child: Text("search item"))
                   ],
                 ),
               ),
