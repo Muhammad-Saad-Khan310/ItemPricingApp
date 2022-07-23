@@ -14,6 +14,12 @@
     <action android:name="android.intent.action.VIEW" />
     <data android:scheme="tel" />
   </intent>
+  <!-- Again aded forr url launcher -->
+  <intent>
+    <action android:name="android.intent.action.VIEW" />
+    <data android:scheme="https" />
+  </intent>
+  <!-- end -->
 </queries>
 
 <!-- The end of configuration -->
